@@ -35,7 +35,7 @@ module.exports = {
     },
     port: 3000,
     hot: true,
-    historyApiFallback: true, // Важно для React Router
+    historyApiFallback: true,
   },
   mode: 'development',
 };

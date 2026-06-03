@@ -17,7 +17,7 @@ export const Sidebar: React.FC = () => {
     <aside className="w-64 bg-gray-900 border-r border-gray-800 h-screen fixed left-0 top-0 flex flex-col z-10">
       <div className="p-6 border-b border-gray-800">
         <h1 className="text-2xl font-bold text-blue-500 flex items-center gap-2">
-          <Truck className="w-8 h-8" /> LogiTrans
+          <Truck className="w-8 h-8" /> TransAssistant
         </h1>
       </div>
       <nav className="flex-1 p-4 space-y-2">

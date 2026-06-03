@@ -15,7 +15,7 @@ export const Login: React.FC = () => {
         <div className="flex justify-center mb-6">
           <div className="bg-blue-600/20 p-4 rounded-full"><Truck className="w-10 h-10 text-blue-500" /></div>
         </div>
-        <h2 className="text-2xl font-bold text-center text-white mb-8">LogiTrans System</h2>
+        <h2 className="text-2xl font-bold text-center text-white mb-8">TransportAssistant System</h2>
         <form onSubmit={handleLogin} className="space-y-4">
           <input type="email" placeholder="Email" defaultValue="admin@logitrans.ru" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none" />
           <input type="password" placeholder="Password" defaultValue="password" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none" />

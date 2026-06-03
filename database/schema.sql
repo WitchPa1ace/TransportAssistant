@@ -1,7 +1,6 @@
-CREATE DATABASE IF NOT EXISTS logitrans_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE logitrans_db;
+CREATE DATABASE IF NOT EXISTS transport_assistant_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE transport_assistant_db;
 
--- 1. Таблица Пользователей (Водителей/Диспетчеров)
 CREATE TABLE users (
     id CHAR(36) PRIMARY KEY, -- UUID
     name VARCHAR(100) NOT NULL,
@@ -10,10 +9,8 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Индекс для быстрого поиска по роли (для фильтрации списка)
 CREATE INDEX idx_users_role ON users(role);
 
--- 2. Таблица Автомобилей
 CREATE TABLE vehicles (
     id CHAR(36) PRIMARY KEY,
     model VARCHAR(100) NOT NULL,
@@ -24,14 +21,12 @@ CREATE TABLE vehicles (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Индекс для быстрого поиска по статусу (фильтр "В ремонте" и т.д.)
 CREATE INDEX idx_vehicles_status ON vehicles(status);
 
--- 3. Таблица Рейсов (Заказов)
 CREATE TABLE orders (
     id CHAR(36) PRIMARY KEY,
     vehicle_id CHAR(36),
-    driver_id CHAR(36), -- Ссылка на пользователя-водителя
+    driver_id CHAR(36), 
     origin VARCHAR(100) NOT NULL,
     destination VARCHAR(100) NOT NULL,
     cargo_type VARCHAR(100),
@@ -41,18 +36,13 @@ CREATE TABLE orders (
     start_date DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
-    -- Внешние ключи (Constraints): Связываем таблицы
     CONSTRAINT fk_orders_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE SET NULL,
     CONSTRAINT fk_orders_driver FOREIGN KEY (driver_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- Индекс для быстрого поиска заказов по статусу (Dashboard)
 CREATE INDEX idx_orders_status ON orders(status);
 
--- 4. Таблица Истории/Действий (для логов, если потребуется)
--- Можно добавить позже.
 
--- Начальные данные (Seed)
 INSERT INTO users (id, name, role) VALUES 
 ('u1', 'Администратор', 'admin'),
 ('u2', 'Диспетчер Алексей', 'dispatcher');

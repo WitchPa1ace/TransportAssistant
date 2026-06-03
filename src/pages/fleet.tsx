@@ -2,7 +2,7 @@ import React from 'react';
 import { INITIAL_VEHICLES } from '../services/mockData';
 import { cn } from '../utils/cn';
 
-// Для простоты пока используем мок-данные, но в идеале брать из Context/Props
+// p.s. мокданные, потом интегрировать бд
 export const Fleet: React.FC = () => {
   const vehicles = INITIAL_VEHICLES; 
 
