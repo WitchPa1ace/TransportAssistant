@@ -1,46 +1,21 @@
-const API_URL = 'http://localhost:5000/api/v1';
+const mysql = require('mysql2/promise');
+require('dotenv').config();
 
-export const api = {
-  getVehicles: async () => {
-    const res = await fetch(`${API_URL}/vehicles`);
-    if (!res.ok) throw new Error('Failed to fetch vehicles');
-    const data = await res.json();
-    return data.data || [];
-  },
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '123456',
+  database: process.env.DB_NAME || 'transport_assistant_db',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
 
-  createVehicle: async (vehicle: any) => {
-    const res = await fetch(`${API_URL}/vehicles`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(vehicle),
-    });
-    if (!res.ok) throw new Error('Failed to create vehicle');
-    const data = await res.json();
-    return data.data;
-  },
+pool.getConnection()
+  .then(() => console.log('Connected to MySQL database'))
+  .catch((err: any) => {
+  console.error('MySQL connection error:', err.message);
+  process.exit(1);
+});
 
-  getOrders: async () => {
-    const res = await fetch(`${API_URL}/orders`);
-    if (!res.ok) throw new Error('Failed to fetch orders');
-    const data = await res.json();
-    return data.data || [];
-  },
-
-  createOrder: async (order: any) => {
-    const res = await fetch(`${API_URL}/orders`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(order),
-    });
-    if (!res.ok) throw new Error('Failed to create order');
-    const data = await res.json();
-    return data.data;
-  },
-
-  getStats: async () => {
-    const res = await fetch(`${API_URL}/stats`);
-    if (!res.ok) throw new Error('Failed to fetch stats');
-    const data = await res.json();
-    return data.data || {};
-  }
-};
+module.exports = pool;
