@@ -6,53 +6,81 @@ interface Vehicle {
   id: string;
   model: string;
   plate_number: string;
-  status: 'active' | 'maintenance' | 'inactive';
+  status: string;
   mileage: number;
+  fuel_level: number;
 }
 
 export const Fleet: React.FC = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
 
   useEffect(() => {
-    const loadVehicles = async () => {
-      try {
-        const data = await api.getVehicles();
-        setVehicles(data);
-      } catch (error) {
-        console.error('Failed to load vehicles:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadVehicles();
   }, []);
 
-  const getStatusClass = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'maintenance':
-        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'inactive':
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-      default:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+  const loadVehicles = async () => {
+    try {
+      const data = await api.getVehicles();
+      setVehicles(data);
+    } catch (err) {
+      console.error('Error loading vehicles:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
-    return <div className="text-white text-center py-20">Загрузка...</div>;
-  }
+  const handleAddVehicle = async (vehicleData: any) => {
+    if (editingVehicle) {
+      await api.updateVehicle(editingVehicle.id, vehicleData);
+    } else {
+      await api.createVehicle(vehicleData);
+    }
+    await loadVehicles();
+    closeModal();
+  };
+
+  const handleEdit = (vehicle: Vehicle) => {
+    setEditingVehicle(vehicle);
+    setShowModal(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Удалить это транспортное средство?')) {
+      try {
+        await api.deleteVehicle(id);
+        await loadVehicles();
+      } catch (err) {
+        console.error('Error deleting vehicle:', err);
+        alert('Ошибка при удалении');
+      }
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setEditingVehicle(null);
+  };
+
+  const getStatusClass = (status: string) => {
+    const classes: Record<string, string> = {
+      active: 'bg-green-500/20 text-green-400 border-green-500/30',
+      maintenance: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+      inactive: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
+    };
+    return classes[status] || classes.inactive;
+  };
+
+  if (loading) return <div className="text-white text-center py-20">Загрузка...</div>;
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Управление автопарком</h2>
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => { setEditingVehicle(null); setShowModal(true); }}
           className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium transition"
         >
           + Добавить ТС
@@ -66,6 +94,7 @@ export const Fleet: React.FC = () => {
               <th className="px-6 py-4">Гос. номер</th>
               <th className="px-6 py-4">Статус</th>
               <th className="px-6 py-4">Пробег</th>
+              <th className="px-6 py-4">Действия</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-800">
@@ -79,19 +108,30 @@ export const Fleet: React.FC = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-gray-300">{v.mileage.toLocaleString()} км</td>
+                <td className="px-6 py-4">
+                  <button 
+                    onClick={() => handleEdit(v)}
+                    className="text-blue-400 hover:text-blue-300 mr-3 transition"
+                  >
+                    ✏️ Редактировать
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(v.id)}
+                    className="text-red-400 hover:text-red-300 transition"
+                  >
+                    🗑️ Удалить
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       <AddVehicleModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAdd={async (vehicleData: any) => {
-          await api.createVehicle(vehicleData);
-          const data = await api.getVehicles();
-          setVehicles(data);
-        }}
+        isOpen={showModal}
+        onClose={closeModal}
+        onAdd={handleAddVehicle}
+        initialData={editingVehicle}
       />
     </div>
   );

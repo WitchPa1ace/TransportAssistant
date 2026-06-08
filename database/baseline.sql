@@ -1,17 +1,15 @@
-CREATE DATABASE IF NOT EXISTS transport_assistant_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS transport_assistant_db;
 USE transport_assistant_db;
 
-CREATE TABLE users (
-    id CHAR(36) PRIMARY KEY, -- UUID
+CREATE TABLE IF NOT EXISTS users (
+    id CHAR(36) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     role ENUM('admin', 'dispatcher', 'driver') NOT NULL DEFAULT 'driver',
     phone VARCHAR(20) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_users_role ON users(role);
-
-CREATE TABLE vehicles (
+CREATE TABLE IF NOT EXISTS vehicles (
     id CHAR(36) PRIMARY KEY,
     model VARCHAR(100) NOT NULL,
     plate_number VARCHAR(20) NOT NULL UNIQUE,
@@ -21,12 +19,10 @@ CREATE TABLE vehicles (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_vehicles_status ON vehicles(status);
-
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id CHAR(36) PRIMARY KEY,
     vehicle_id CHAR(36),
-    driver_id CHAR(36), 
+    driver_id CHAR(36),
     origin VARCHAR(100) NOT NULL,
     destination VARCHAR(100) NOT NULL,
     cargo_type VARCHAR(100),
@@ -40,16 +36,6 @@ CREATE TABLE orders (
     CONSTRAINT fk_orders_driver FOREIGN KEY (driver_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
+CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_vehicles_status ON vehicles(status);
 CREATE INDEX idx_orders_status ON orders(status);
-
-
-INSERT INTO users (id, name, role) VALUES 
-('u1', 'Администратор', 'admin'),
-('u2', 'Диспетчер Алексей', 'dispatcher');
-
-INSERT INTO vehicles (id, model, plate_number, status, mileage) VALUES 
-('v1', 'Volvo FH16', 'А111АА777', 'active', 120000),
-('v2', 'Kamaz 5490', 'В222ВВ777', 'maintenance', 300000);
-
-INSERT INTO orders (id, vehicle_id, origin, destination, status, start_date, revenue) VALUES 
-('o1', 'v1', 'Москва', 'Казань', 'in-transit', CURDATE(), 150000);

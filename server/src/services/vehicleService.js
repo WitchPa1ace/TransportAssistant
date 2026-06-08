@@ -1,44 +1,58 @@
-const pool = require('../config/db');
-const { v4: uuidv4 } = require('uuid');
+const db = require('../config/db');
 
-class VehicleService {
-  async getAll() {
-    const [rows] = await pool.query('SELECT * FROM vehicles ORDER BY created_at DESC');
-    return rows;
-  }
+exports.getAllVehicles = async () => {
+  const [rows] = await db.query(
+    'SELECT * FROM vehicles WHERE deleted_at IS NULL'
+  );
+  return rows;
+};
 
-  async getById(id) {
-    const [rows] = await pool.query('SELECT * FROM vehicles WHERE id = ?', [id]);
-    return rows[0];
-  }
+exports.getVehicleById = async (id) => {
+  const [rows] = await db.query(
+    'SELECT * FROM vehicles WHERE id = ? AND deleted_at IS NULL',
+    [id]
+  );
+  return rows[0];
+};
 
-  async create(data) {
-    const id = uuidv4();
-    const { model, plate_number, status = 'active', mileage = 0, fuel_level = 100 } = data;
-    
-    await pool.query(
-      'INSERT INTO vehicles (id, model, plate_number, status, mileage, fuel_level) VALUES (?, ?, ?, ?, ?, ?)',
-      [id, model, plate_number, status, mileage, fuel_level]
-    );
-    
-    return { id, model, plate_number, status, mileage, fuel_level };
-  }
+exports.getVehiclesForSelect = async () => {
+  const [rows] = await db.query(
+    'SELECT id, model, plate_number FROM vehicles WHERE status = \'active\' AND deleted_at IS NULL'
+  );
+  return rows;
+};
 
-  async update(id, data) {
-    const { model, plate_number, status, mileage, fuel_level } = data;
-    
-    const [result] = await pool.query(
-      'UPDATE vehicles SET model = ?, plate_number = ?, status = ?, mileage = ?, fuel_level = ? WHERE id = ?',
-      [model, plate_number, status, mileage, fuel_level, id]
-    );
-    
-    return result.affectedRows > 0;
-  }
+exports.createVehicle = async (data) => {
+  const { model, plate_number, status, mileage, fuel_level } = data;
+  const crypto = require('crypto');
+  const id = crypto.randomUUID();
+  
+  await db.query(
+    `INSERT INTO vehicles (id, model, plate_number, status, mileage, fuel_level) 
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [id, model, plate_number, status || 'active', mileage || 0, fuel_level || 100]
+  );
+  
+  return this.getVehicleById(id);
+};
 
-  async delete(id) {
-    const [result] = await pool.query('DELETE FROM vehicles WHERE id = ?', [id]);
-    return result.affectedRows > 0;
-  }
-}
+exports.updateVehicle = async (id, data) => {
+  const { model, plate_number, status, mileage, fuel_level } = data;
+  
+  const [result] = await db.query(
+    `UPDATE vehicles 
+     SET model = ?, plate_number = ?, status = ?, mileage = ?, fuel_level = ?
+     WHERE id = ? AND deleted_at IS NULL`,
+    [model, plate_number, status, mileage, fuel_level, id]
+  );
+  
+  if (result.affectedRows === 0) return null;
+  return this.getVehicleById(id);
+};
 
-module.exports = new VehicleService();
+exports.deleteVehicle = async (id) => {
+  await db.query(
+    'UPDATE vehicles SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL',
+    [id]
+  );
+};

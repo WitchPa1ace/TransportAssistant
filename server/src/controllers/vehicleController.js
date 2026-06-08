@@ -1,80 +1,61 @@
 const vehicleService = require('../services/vehicleService');
 
-exports.getAllVehicles = async (req, res, next) => {
+exports.getAllVehicles = async (req, res) => {
   try {
-    const vehicles = await vehicleService.getAll();
-    res.status(200).json({
-      success: true,
-      count: vehicles.length,
-      data: vehicles
-    });
+    const vehicles = await vehicleService.getAllVehicles();
+    res.json({ success: true, data: vehicles });
   } catch (error) {
-    next(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-exports.getVehicleById = async (req, res, next) => {
+exports.getVehicleById = async (req, res) => {
   try {
-    const vehicle = await vehicleService.getById(req.params.id);
+    const vehicle = await vehicleService.getVehicleById(req.params.id);
     if (!vehicle) {
-      return res.status(404).json({
-        success: false,
-        error: { message: 'Vehicle not found', code: 404 }
-      });
+      return res.status(404).json({ success: false, message: 'Vehicle not found' });
     }
-    res.status(200).json({
-      success: true,
-      data: vehicle
-    });
+    res.json({ success: true, data: vehicle });
   } catch (error) {
-    next(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-exports.createVehicle = async (req, res, next) => {
+exports.createVehicle = async (req, res) => {
   try {
-    const newVehicle = await vehicleService.create(req.body);
-    res.status(201).json({
-      success: true,
-      data: newVehicle
-    });
+    const vehicle = await vehicleService.createVehicle(req.body);
+    res.json({ success: true, data: vehicle });
   } catch (error) {
-    next(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-exports.updateVehicle = async (req, res, next) => {
+exports.updateVehicle = async (req, res) => {
   try {
-    const updated = await vehicleService.update(req.params.id, req.body);
-    if (!updated) {
-      return res.status(404).json({
-        success: false,
-        error: { message: 'Vehicle not found', code: 404 }
-      });
+    const vehicle = await vehicleService.updateVehicle(req.params.id, req.body);
+    if (!vehicle) {
+      return res.status(404).json({ success: false, message: 'Vehicle not found' });
     }
-    res.status(200).json({
-      success: true,
-      message: 'Vehicle updated successfully'
-    });
+    res.json({ success: true, data: vehicle });
   } catch (error) {
-    next(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-exports.deleteVehicle = async (req, res, next) => {
+exports.getVehiclesForSelect = async (req, res) => {
   try {
-    const deleted = await vehicleService.delete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({
-        success: false,
-        error: { message: 'Vehicle not found', code: 404 }
-      });
-    }
-    res.status(200).json({
-      success: true,
-      message: 'Vehicle deleted successfully'
-    });
+    const vehicles = await vehicleService.getVehiclesForSelect();
+    res.json({ success: true, data: vehicles });
   } catch (error) {
-    next(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.deleteVehicle = async (req, res) => {
+  try {
+    await vehicleService.deleteVehicle(req.params.id);
+    res.json({ success: true, message: 'Vehicle deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

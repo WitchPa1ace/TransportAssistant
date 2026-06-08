@@ -17,7 +17,7 @@ const seedData = {
     { id: 'v5', model: 'MAN TGX 18.500', plate_number: 'К505КК777', status: 'inactive', mileage: 450000, fuel_level: 0 },
     { id: 'v6', model: 'DAF XF 105', plate_number: 'М606ММ777', status: 'active', mileage: 175000, fuel_level: 75 },
   ],
-  orders: [
+    orders: [
     { 
       id: 'o1', 
       vehicle_id: 'v1', 
@@ -26,9 +26,9 @@ const seedData = {
       destination: 'Санкт-Петербург', 
       cargo_type: 'Электроника', 
       weight: 18.5, 
-      status: 'in-transit', 
+      status: 'delivered', 
       revenue: 145000.00, 
-      start_date: '2026-06-01' 
+      start_date: '2025-07-15' 
     },
     { 
       id: 'o2', 
@@ -38,9 +38,9 @@ const seedData = {
       destination: 'Екатеринбург', 
       cargo_type: 'Продукты питания', 
       weight: 12.0, 
-      status: 'pending', 
+      status: 'delivered', 
       revenue: 95000.00, 
-      start_date: '2026-06-08' 
+      start_date: '2025-08-22' 
     },
     { 
       id: 'o3', 
@@ -52,7 +52,7 @@ const seedData = {
       weight: 22.0, 
       status: 'delivered', 
       revenue: 75000.00, 
-      start_date: '2026-05-25' 
+      start_date: '2025-09-10' 
     },
     { 
       id: 'o4', 
@@ -62,9 +62,9 @@ const seedData = {
       destination: 'Нижний Новгород', 
       cargo_type: 'Автозапчасти', 
       weight: 8.5, 
-      status: 'in-transit', 
+      status: 'delivered', 
       revenue: 55000.00, 
-      start_date: '2026-06-02' 
+      start_date: '2025-10-05' 
     },
     { 
       id: 'o5', 
@@ -74,9 +74,9 @@ const seedData = {
       destination: 'Мурманск', 
       cargo_type: 'Оборудование', 
       weight: 15.0, 
-      status: 'pending', 
+      status: 'delivered', 
       revenue: 120000.00, 
-      start_date: '2026-06-10' 
+      start_date: '2025-11-18' 
     },
     { 
       id: 'o6', 
@@ -86,9 +86,81 @@ const seedData = {
       destination: 'Челябинск', 
       cargo_type: 'Металлопрокат', 
       weight: 25.0, 
-      status: 'cancelled', 
-      revenue: 0, 
-      start_date: '2026-05-20' 
+      status: 'delivered', 
+      revenue: 85000.00, 
+      start_date: '2025-12-12' 
+    },
+    { 
+      id: 'o7', 
+      vehicle_id: 'v4', 
+      driver_id: 'u4', 
+      origin: 'Москва', 
+      destination: 'Воронеж', 
+      cargo_type: 'Мебель', 
+      weight: 10.0, 
+      status: 'delivered', 
+      revenue: 65000.00, 
+      start_date: '2026-01-20' 
+    },
+    { 
+      id: 'o8', 
+      vehicle_id: 'v6', 
+      driver_id: 'u5', 
+      origin: 'Краснодар', 
+      destination: 'Сочи', 
+      cargo_type: 'Продукты питания', 
+      weight: 5.5, 
+      status: 'delivered', 
+      revenue: 45000.00, 
+      start_date: '2026-02-14' 
+    },
+    { 
+      id: 'o9', 
+      vehicle_id: 'v1', 
+      driver_id: 'u6', 
+      origin: 'Москва', 
+      destination: 'Казань', 
+      cargo_type: 'Электроника', 
+      weight: 14.0, 
+      status: 'delivered', 
+      revenue: 95000.00, 
+      start_date: '2026-03-08' 
+    },
+    { 
+      id: 'o10', 
+      vehicle_id: 'v3', 
+      driver_id: 'u4', 
+      origin: 'Санкт-Петербург', 
+      destination: 'Москва', 
+      cargo_type: 'Оборудование', 
+      weight: 20.0, 
+      status: 'delivered', 
+      revenue: 110000.00, 
+      start_date: '2026-04-25' 
+    },
+    { 
+      id: 'o11', 
+      vehicle_id: 'v4', 
+      driver_id: 'u5', 
+      origin: 'Новосибирск', 
+      destination: 'Москва', 
+      cargo_type: 'Стройматериалы', 
+      weight: 22.0, 
+      status: 'in-transit', 
+      revenue: 175000.00, 
+      start_date: '2026-06-01' 
+    },
+    { 
+      id: 'o12', 
+      vehicle_id: 'v6', 
+      driver_id: 'u6', 
+      origin: 'Казань', 
+      destination: 'Уфа', 
+      cargo_type: 'Продукты питания', 
+      weight: 8.0, 
+      status: 'pending', 
+      revenue: 50000.00, 
+      start_date: '2026-06-10' 
     },
   ]
 };
